@@ -28,12 +28,6 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-/* Library includes. */
-#include "stm32f4xx.h"
-#include <stdint.h>
-
-extern uint32_t SystemCoreClock;
-
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -45,6 +39,11 @@ extern uint32_t SystemCoreClock;
  *
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
+
+#if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+    #include <stdint.h>
+    extern uint32_t SystemCoreClock;
+#endif
 
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			0
@@ -81,6 +80,14 @@ to exclude the API function. */
 #define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
+
+/* Cortex-M specific definitions. */
+#ifdef __NVIC_PRIO_BITS
+	/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
+	#define configPRIO_BITS       		__NVIC_PRIO_BITS
+#else
+	#define configPRIO_BITS       		4        /* 15 priority levels */
+#endif
 
 /* This demo makes use of one or more example stats formatting functions.  These
 format the raw data provided by the uxTaskGetSystemState() function in to human
@@ -126,6 +133,7 @@ NVIC value of 255. */
 #define configNET_MASK2		255
 #define configNET_MASK3		0
 
+
 /*-----------------------------------------------------------
  * Macros required to setup the timer for the run time stats.
  *-----------------------------------------------------------*/
@@ -138,9 +146,10 @@ extern unsigned long ulRunTimeStatsClock;
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names. */
-#define vPortSVCHandler SVC_Handler
-#define xPortPendSVHandler PendSV_Handler
+#define vPortSVCHandler 	SVC_Handler
+#define xPortPendSVHandler 	PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
+
 
 #endif /* FREERTOS_CONFIG_H */
 
