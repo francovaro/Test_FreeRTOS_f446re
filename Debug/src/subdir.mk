@@ -4,19 +4,31 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/ledhardware.c \
+../src/ledtask.c \
 ../src/main.c \
+../src/peripheralinit.c \
 ../src/syscalls.c \
-../src/system_stm32f4xx.c 
+../src/system_stm32f4xx.c \
+../src/taskhandler.c 
 
 OBJS += \
+./src/ledhardware.o \
+./src/ledtask.o \
 ./src/main.o \
+./src/peripheralinit.o \
 ./src/syscalls.o \
-./src/system_stm32f4xx.o 
+./src/system_stm32f4xx.o \
+./src/taskhandler.o 
 
 C_DEPS += \
+./src/ledhardware.d \
+./src/ledtask.d \
 ./src/main.d \
+./src/peripheralinit.d \
 ./src/syscalls.d \
-./src/system_stm32f4xx.d 
+./src/system_stm32f4xx.d \
+./src/taskhandler.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

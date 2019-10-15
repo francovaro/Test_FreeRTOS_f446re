@@ -41,11 +41,14 @@
  *----------------------------------------------------------*/
 
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
+	#include "stm32f4xx.h"
     #include <stdint.h>
     extern uint32_t SystemCoreClock;
 #endif
 
 #define configUSE_PREEMPTION		1
+#define configUSE_TIME_SLICING		1
+
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) SystemCoreClock )
@@ -75,7 +78,7 @@ to exclude the API function. */
 
 #define INCLUDE_vTaskPrioritySet		1
 #define INCLUDE_uxTaskPriorityGet		1
-#define INCLUDE_vTaskDelete				1
+#define INCLUDE_vTaskDelete				0
 #define INCLUDE_vTaskCleanUpResources	0
 #define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
@@ -113,6 +116,7 @@ NVIC value of 255. */
  * Ethernet configuration.
  *-----------------------------------------------------------*/
 
+#if 0
 /* MAC address configuration. */
 #define configMAC_ADDR0	0x00
 #define configMAC_ADDR1	0x12
@@ -132,6 +136,7 @@ NVIC value of 255. */
 #define configNET_MASK1		255
 #define configNET_MASK2		255
 #define configNET_MASK3		0
+#endif
 
 
 /*-----------------------------------------------------------
