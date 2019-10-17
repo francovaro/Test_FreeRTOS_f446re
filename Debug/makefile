@@ -9,9 +9,9 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include startup/subdir.mk
--include src/FreeRTOS/FREERTOS_LIB/portable/MemMang/subdir.mk
--include src/FreeRTOS/FREERTOS_LIB/portable/GCC/ARM_CM4F/subdir.mk
--include src/FreeRTOS/FREERTOS_LIB/subdir.mk
+-include src/FreeRTOS/portable/MemMang/subdir.mk
+-include src/FreeRTOS/portable/GCC/ARM_CM4F/subdir.mk
+-include src/FreeRTOS/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -33,7 +33,7 @@ endif
 all: Test_FreeRTOS_f446re.elf
 
 dependents:
-	-cd C:/work/workspace_stm/nucleo-f446re_stdperiph_lib/Debug && $(MAKE) all
+	-cd C:/work/workspace_stm/nucleo-f446re_stdperiph_lib/Debug && $(MAKE) clean all
 
 # Tool invocations
 Test_FreeRTOS_f446re.elf: $(OBJS) $(USER_OBJS) C:/work/workspace_stm/nucleo-f446re_stdperiph_lib/Debug/libnucleo-f446re_stdperiph_lib.a C:\work\workspace_stm\Test_FreeRTOS_f446re/LinkerScript.ld

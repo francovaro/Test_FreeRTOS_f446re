@@ -9,12 +9,13 @@
 */
 
 
-#include "stm32f4xx.h"
-
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+
+/* */
+#include "stm32f4xx.h"
 
 /* application includes */
 #include "taskhandler.h"
@@ -30,12 +31,14 @@ int main(void)
 	 * TODO
 	 * hw setup
 	 */
+	(void)uiPeripheralInit_Init();
 
 	/*
 	 * TODO
 	 * create all task
 	 */
 	(void)uiTaskhandler_CreateAllTasks();
+
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();

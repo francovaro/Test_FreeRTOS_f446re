@@ -17,6 +17,13 @@ uint8_t uiTaskhandler_CreateAllTasks(void)
 {
 	uint8_t retVal = 0;
 
+	xTaskCreate( vLedTask,	/* function*/
+			"Led Task", 	/* name */
+			1000, 			/* stack size */
+			NULL, 			/* param */
+			1, 				/* prio */
+			NULL );			/* handler */
+
 	return retVal;
 }
 

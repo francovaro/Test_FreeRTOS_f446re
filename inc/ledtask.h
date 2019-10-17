@@ -8,5 +8,6 @@
 #ifndef _LEDTASK_H_
 #define _LEDTASK_H_
 
+extern void vLedTask( void *pvParameters );
 
 #endif

@@ -4,35 +4,35 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/ledhardware.c \
-../src/ledtask.c \
-../src/main.c \
-../src/peripheralinit.c \
-../src/syscalls.c \
-../src/system_stm32f4xx.c \
-../src/taskhandler.c 
+../src/FreeRTOS/croutine.c \
+../src/FreeRTOS/event_groups.c \
+../src/FreeRTOS/list.c \
+../src/FreeRTOS/queue.c \
+../src/FreeRTOS/stream_buffer.c \
+../src/FreeRTOS/tasks.c \
+../src/FreeRTOS/timers.c 
 
 OBJS += \
-./src/ledhardware.o \
-./src/ledtask.o \
-./src/main.o \
-./src/peripheralinit.o \
-./src/syscalls.o \
-./src/system_stm32f4xx.o \
-./src/taskhandler.o 
+./src/FreeRTOS/croutine.o \
+./src/FreeRTOS/event_groups.o \
+./src/FreeRTOS/list.o \
+./src/FreeRTOS/queue.o \
+./src/FreeRTOS/stream_buffer.o \
+./src/FreeRTOS/tasks.o \
+./src/FreeRTOS/timers.o 
 
 C_DEPS += \
-./src/ledhardware.d \
-./src/ledtask.d \
-./src/main.d \
-./src/peripheralinit.d \
-./src/syscalls.d \
-./src/system_stm32f4xx.d \
-./src/taskhandler.d 
+./src/FreeRTOS/croutine.d \
+./src/FreeRTOS/event_groups.d \
+./src/FreeRTOS/list.d \
+./src/FreeRTOS/queue.d \
+./src/FreeRTOS/stream_buffer.d \
+./src/FreeRTOS/tasks.d \
+./src/FreeRTOS/timers.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.c
+src/FreeRTOS/%.o: ../src/FreeRTOS/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)

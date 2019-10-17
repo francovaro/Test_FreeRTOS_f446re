@@ -4,35 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/ledhardware.c \
-../src/ledtask.c \
-../src/main.c \
-../src/peripheralinit.c \
-../src/syscalls.c \
-../src/system_stm32f4xx.c \
-../src/taskhandler.c 
+../src/FreeRTOS/portable/MemMang/heap_4.c 
 
 OBJS += \
-./src/ledhardware.o \
-./src/ledtask.o \
-./src/main.o \
-./src/peripheralinit.o \
-./src/syscalls.o \
-./src/system_stm32f4xx.o \
-./src/taskhandler.o 
+./src/FreeRTOS/portable/MemMang/heap_4.o 
 
 C_DEPS += \
-./src/ledhardware.d \
-./src/ledtask.d \
-./src/main.d \
-./src/peripheralinit.d \
-./src/syscalls.d \
-./src/system_stm32f4xx.d \
-./src/taskhandler.d 
+./src/FreeRTOS/portable/MemMang/heap_4.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.c
+src/FreeRTOS/portable/MemMang/%.o: ../src/FreeRTOS/portable/MemMang/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
