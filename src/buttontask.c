@@ -14,10 +14,17 @@
 #include "buttontask.h"
 //#include "buttonhardware.h"
 
+extern volatile uint8_t gButtonHwPressed;
+
 void vButtonTask( void *pvParameters )
 {
 	while(1)
 	{
+		if (gButtonHwPressed == SET)
+		{
+			gButtonHwPressed = RESET;
+		}
+		vTaskDelay( pdMS_TO_TICKS( 200 ) );
 		/*
 		 *
 		 */

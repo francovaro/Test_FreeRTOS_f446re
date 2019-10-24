@@ -26,16 +26,16 @@ uint8_t uiTaskhandler_CreateAllTasks(void)
 			"Led Task", 	/* name */
 			1000, 			/* stack size */
 			NULL, 			/* param */
-			1, 				/* prio */
+			2, 				/* prio */
 			taskArray[0] );			/* handler */
-
+#if 1
 	xTaskCreate( vButtonTask,	/* function*/
 			"Button Task", 	/* name */
 			1000, 			/* stack size */
 			NULL, 			/* param */
-			2, 				/* prio */
+			1, 				/* prio */
 			taskArray[1] );			/* handler */
-
+#endif
 
 	return retVal;
 }

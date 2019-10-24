@@ -26,17 +26,10 @@ unsigned long ulRunTimeStatsClock;
 
 int main(void)
 {
-
-	/*
-	 * TODO
-	 * hw setup
-	 */
+	/* init peripheral*/
 	(void)uiPeripheralInit_Init();
 
-	/*
-	 * TODO
-	 * create all task
-	 */
+	/* init task */
 	(void)uiTaskhandler_CreateAllTasks();
 
 

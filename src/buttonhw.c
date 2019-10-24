@@ -17,6 +17,7 @@ void vButtonHardware_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
 
 	GPIO_StructInit(&GPIO_InitStructure);
 	EXTI_StructInit(&EXTI_InitStructure);
@@ -46,6 +47,23 @@ void vButtonHardware_Init(void)
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 
 	EXTI_Init(&EXTI_InitStructure);
+
+	/* Enable the USARTx Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 3;	/* to check ! */
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;			/* to check ! */
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+}
+
+void EXTI15_10_IRQHandler(void)
+{
+	if(EXTI_GetITStatus(EXTI_Line13) != RESET)
+	{
+		gButtonHwPressed = SET;
+		/* Clear the EXTI line 13 pending bit */
+		EXTI_ClearITPendingBit(EXTI_Line13);
+	}
 }
 
 #endif /* BUTTONHW_C_ */
