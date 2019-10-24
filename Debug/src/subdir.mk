@@ -4,6 +4,8 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/buttonhw.c \
+../src/buttontask.c \
 ../src/ledhardware.c \
 ../src/ledtask.c \
 ../src/main.c \
@@ -13,6 +15,8 @@ C_SRCS += \
 ../src/taskhandler.c 
 
 OBJS += \
+./src/buttonhw.o \
+./src/buttontask.o \
 ./src/ledhardware.o \
 ./src/ledtask.o \
 ./src/main.o \
@@ -22,6 +26,8 @@ OBJS += \
 ./src/taskhandler.o 
 
 C_DEPS += \
+./src/buttonhw.d \
+./src/buttontask.d \
 ./src/ledhardware.d \
 ./src/ledtask.d \
 ./src/main.d \

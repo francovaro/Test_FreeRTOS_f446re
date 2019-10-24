@@ -12,6 +12,11 @@
 
 #include "taskhandler.h"
 #include "ledtask.h"
+#include "buttontask.h"
+
+#define TOTAL_TASK 	(2u)
+
+static TaskHandle_t * taskArray[TOTAL_TASK];
 
 uint8_t uiTaskhandler_CreateAllTasks(void)
 {
@@ -22,7 +27,15 @@ uint8_t uiTaskhandler_CreateAllTasks(void)
 			1000, 			/* stack size */
 			NULL, 			/* param */
 			1, 				/* prio */
-			NULL );			/* handler */
+			taskArray[0] );			/* handler */
+
+	xTaskCreate( vButtonTask,	/* function*/
+			"Button Task", 	/* name */
+			1000, 			/* stack size */
+			NULL, 			/* param */
+			2, 				/* prio */
+			taskArray[1] );			/* handler */
+
 
 	return retVal;
 }

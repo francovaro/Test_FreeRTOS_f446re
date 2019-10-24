@@ -7,6 +7,8 @@
 "src/FreeRTOS/timers.o"
 "src/FreeRTOS/portable/GCC/ARM_CM4F/port.o"
 "src/FreeRTOS/portable/MemMang/heap_4.o"
+"src/buttonhw.o"
+"src/buttontask.o"
 "src/ledhardware.o"
 "src/ledtask.o"
 "src/main.o"

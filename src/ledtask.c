@@ -8,10 +8,9 @@
 
 
 /* Scheduler includes. */
-//#include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "task.h"
-//#include "queue.h"
+#include "queue.h"
 
 #include "ledtask.h"
 #include "ledhardware.h"
