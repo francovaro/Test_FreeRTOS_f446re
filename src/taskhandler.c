@@ -10,7 +10,9 @@
 #include "task.h"
 #include "queue.h"
 
+/* tasks include */
 #include "taskhandler.h"
+#include "taskcommon.h"
 #include "ledtask.h"
 #include "buttontask.h"
 
@@ -22,20 +24,21 @@ uint8_t uiTaskhandler_CreateAllTasks(void)
 {
 	uint8_t retVal = 0;
 
+	vTaskcommon_InitQueue();
+
 	xTaskCreate( vLedTask,	/* function*/
 			"Led Task", 	/* name */
 			1000, 			/* stack size */
 			NULL, 			/* param */
 			2, 				/* prio */
 			taskArray[0] );			/* handler */
-#if 1
+
 	xTaskCreate( vButtonTask,	/* function*/
 			"Button Task", 	/* name */
 			1000, 			/* stack size */
 			NULL, 			/* param */
 			1, 				/* prio */
 			taskArray[1] );			/* handler */
-#endif
 
 	return retVal;
 }

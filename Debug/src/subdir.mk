@@ -12,6 +12,7 @@ C_SRCS += \
 ../src/peripheralinit.c \
 ../src/syscalls.c \
 ../src/system_stm32f4xx.c \
+../src/taskcommon.c \
 ../src/taskhandler.c 
 
 OBJS += \
@@ -23,6 +24,7 @@ OBJS += \
 ./src/peripheralinit.o \
 ./src/syscalls.o \
 ./src/system_stm32f4xx.o \
+./src/taskcommon.o \
 ./src/taskhandler.o 
 
 C_DEPS += \
@@ -34,6 +36,7 @@ C_DEPS += \
 ./src/peripheralinit.d \
 ./src/syscalls.d \
 ./src/system_stm32f4xx.d \
+./src/taskcommon.d \
 ./src/taskhandler.d 
 
 
