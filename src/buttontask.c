@@ -11,22 +11,35 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+
 #include "buttontask.h"
 //#include "buttonhardware.h"
 
 extern volatile uint8_t gButtonHwPressed;
+static SemaphoreHandle_t gSemButton;
 
 void vButtonTask( void *pvParameters )
 {
+	gSemButton = xSemaphoreCreateBinary();
 	while(1)
 	{
-		if (gButtonHwPressed == SET)
+		BaseType_t retVal;
+		retVal = xSemaphoreTake( gSemButton, portMAX_DELAY);
+		if (retVal == pdTRUE)
 		{
-			gButtonHwPressed = RESET;
+			if (gButtonHwPressed == SET)
+			{
+				gButtonHwPressed = RESET;
+			}
 		}
-		vTaskDelay( pdMS_TO_TICKS( 200 ) );
-		/*
-		 *
-		 */
+		else
+		{
+			// vTaskDelay( pdMS_TO_TICKS( 250 ) );
+		}
 	}
+}
+
+SemaphoreHandle_t * sem_ButtonTask_GetSemHandler(void)
+{
+	return &gSemButton;
 }

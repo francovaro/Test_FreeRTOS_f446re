@@ -8,16 +8,29 @@
 #ifndef BUTTONHW_C_
 #define BUTTONHW_C_
 
-#include "buttonhw.h"
+/* FreeRTOS include */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+
+/* STM include*/
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_exti.h"
+
+/* internl include */
+#include "buttonhw.h"
+
+static SemaphoreHandle_t* pgSemButton = 0;
 
 void vButtonHardware_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	EXTI_InitTypeDef EXTI_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
+
+	pgSemButton = sem_ButtonTask_GetSemHandler();
+
 
 	GPIO_StructInit(&GPIO_InitStructure);
 	EXTI_StructInit(&EXTI_InitStructure);
@@ -58,11 +71,18 @@ void vButtonHardware_Init(void)
 
 void EXTI15_10_IRQHandler(void)
 {
+	BaseType_t taskWoken = pdFALSE;
 	if(EXTI_GetITStatus(EXTI_Line13) != RESET)
 	{
 		gButtonHwPressed = SET;
+		if (pgSemButton != 0)
+		{
+			xSemaphoreGiveFromISR( *pgSemButton, &taskWoken );
+		}
 		/* Clear the EXTI line 13 pending bit */
+
 		EXTI_ClearITPendingBit(EXTI_Line13);
+		portYIELD_FROM_ISR( taskWoken );
 	}
 }
 
