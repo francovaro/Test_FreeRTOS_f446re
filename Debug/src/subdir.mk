@@ -15,7 +15,8 @@ C_SRCS += \
 ../src/system_stm32f4xx.c \
 ../src/taskcommon.c \
 ../src/taskhandler.c \
-../src/uart.c 
+../src/uart.c \
+../src/uart_task.c 
 
 OBJS += \
 ./src/buttonhw.o \
@@ -29,7 +30,8 @@ OBJS += \
 ./src/system_stm32f4xx.o \
 ./src/taskcommon.o \
 ./src/taskhandler.o \
-./src/uart.o 
+./src/uart.o \
+./src/uart_task.o 
 
 C_DEPS += \
 ./src/buttonhw.d \
@@ -43,7 +45,8 @@ C_DEPS += \
 ./src/system_stm32f4xx.d \
 ./src/taskcommon.d \
 ./src/taskhandler.d \
-./src/uart.d 
+./src/uart.d \
+./src/uart_task.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

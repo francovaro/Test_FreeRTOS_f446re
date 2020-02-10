@@ -19,4 +19,5 @@
 "src/taskcommon.o"
 "src/taskhandler.o"
 "src/uart.o"
+"src/uart_task.o"
 "startup/startup_stm32.o"

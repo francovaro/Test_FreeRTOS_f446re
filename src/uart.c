@@ -6,6 +6,7 @@
  */
 
 #include "uart.h"
+#include "dma.h"
 
 static void USART2_NVIC_Config(void);
 
@@ -61,11 +62,15 @@ void UART_fv_config(uint8_t irqEnabled)
 		USART2_NVIC_Config();
 	}
 
+	vDMA_UART_Configuration();
+
 	USART_Cmd(USART2 , ENABLE);
 }
 
 /**
  *
+ * @param strToSend
+ * @param byteToSend
  */
 void UART_fv_SendData(const char * strToSend, uint16_t byteToSend)
 {

@@ -28,23 +28,27 @@ void vButtonTask( void *pvParameters )
 	gSemButton = xSemaphoreCreateBinary();
 	ptaskcommon_Queue = vTaskcommon_GetQueue();
 
-	while(1)
+	if ((gSemButton != NULL) && (ptaskcommon_Queue != NULL))
 	{
-		BaseType_t retVal;
-		retVal = xSemaphoreTake( gSemButton, portMAX_DELAY);
-		if (retVal == pdTRUE)
+		while(1)
 		{
-			if (gButtonHwPressed == SET)
+			BaseType_t retVal;
+			retVal = xSemaphoreTake( gSemButton, portMAX_DELAY);
+			if (retVal == pdTRUE)
 			{
-				gButtonHwPressed = RESET;
-				retVal =  xQueueSendToBack(*ptaskcommon_Queue , &element, 0);
+				if (gButtonHwPressed == SET)
+				{
+					gButtonHwPressed = RESET;
+					retVal =  xQueueSendToBack(*ptaskcommon_Queue , &element, 0);
+				}
+			}
+			else
+			{
+
 			}
 		}
-		else
-		{
-
-		}
 	}
+
 }
 
 SemaphoreHandle_t * sem_ButtonTask_GetSemHandler(void)
