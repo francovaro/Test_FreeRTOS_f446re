@@ -23,11 +23,11 @@ typedef enum
 
 const uint8_t command[e_Uart_command_max][5u] = { "c01#" };
 
-extern volatile  uint8_t dma_uart_TX_buffer[];
-extern volatile  uint8_t dma_uart_RX_buffer[];
+extern __IO  uint8_t dma_uart_TX_buffer[];
+extern __IO  uint8_t dma_uart_RX_buffer[];
 
-extern volatile  uint8_t dma_uart_TX_byte;
-extern volatile  uint8_t dma_uart_RX_byte;
+extern __IO  uint8_t dma_uart_TX_byte;
+extern __IO  uint8_t dma_uart_RX_byte;
 
 static SemaphoreHandle_t gUart_TX_Button;
 
@@ -49,7 +49,7 @@ void vUartTask( void *pvParameters )
 
     gUart_TX_Button = xSemaphoreCreateBinary();
 
-    UART_fv_SendData(pStart, strlen(pStart));
+    // UART_fv_SendData(pStart, strlen(pStart));
 
     if (gUart_TX_Button != NULL)
     {

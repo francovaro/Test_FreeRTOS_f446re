@@ -64,6 +64,9 @@ void UART_fv_config(uint8_t irqEnabled)
 
 	vDMA_UART_Configuration();
 
+	  /* Enable USART DMA RX Requsts */
+	USART_DMACmd(USART2, (USART_DMAReq_Rx | USART_DMAReq_Rx), ENABLE);
+
 	USART_Cmd(USART2 , ENABLE);
 }
 
@@ -78,7 +81,7 @@ void UART_fv_SendData(const char * strToSend, uint16_t byteToSend)
 
 	for(count = 0 ; count < byteToSend ; count++)
 	{
-		while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+		while (USART_GetFlagStatus(USART2, USART_SR_RXNE) == RESET);
 		USART_SendData(USART2, *strToSend++);
 
 	}
