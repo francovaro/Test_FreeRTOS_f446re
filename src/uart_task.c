@@ -11,6 +11,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include <string.h>
+
 #include "uart_task.h"
 #include "uart.h"
 #include "dma.h"
@@ -49,10 +51,15 @@ void vUartTask( void *pvParameters )
 
     gUart_TX_Button = xSemaphoreCreateBinary();
 
-    // UART_fv_SendData(pStart, strlen(pStart));
+
 
     if (gUart_TX_Button != NULL)
     {
+    	UART_DMA_set_sem(&gUart_TX_Button);
+
+        //UART_fv_SendData(pStart, strlen(pStart));
+        UART_DMA_SendData(pStart, strlen(pStart));
+
     	while(1)
     	{
     		retVal = xSemaphoreTake( gUart_TX_Button, portMAX_DELAY);

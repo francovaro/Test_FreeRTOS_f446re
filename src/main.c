@@ -32,7 +32,6 @@ int main(void)
 	/* init task */
 	(void)uiTaskhandler_CreateAllTasks();
 
-
 	/* Start the scheduler. */
 	vTaskStartScheduler();
 

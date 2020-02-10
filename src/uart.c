@@ -81,7 +81,7 @@ void UART_fv_SendData(const char * strToSend, uint16_t byteToSend)
 
 	for(count = 0 ; count < byteToSend ; count++)
 	{
-		while (USART_GetFlagStatus(USART2, USART_SR_RXNE) == RESET);
+		while (USART_GetFlagStatus(USART2, USART_SR_TXE) == RESET);
 		USART_SendData(USART2, *strToSend++);
 
 	}
