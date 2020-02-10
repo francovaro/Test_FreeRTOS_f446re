@@ -6,6 +6,7 @@
 C_SRCS += \
 ../src/buttonhw.c \
 ../src/buttontask.c \
+../src/dma.c \
 ../src/ledhardware.c \
 ../src/ledtask.c \
 ../src/main.c \
@@ -13,11 +14,13 @@ C_SRCS += \
 ../src/syscalls.c \
 ../src/system_stm32f4xx.c \
 ../src/taskcommon.c \
-../src/taskhandler.c 
+../src/taskhandler.c \
+../src/uart.c 
 
 OBJS += \
 ./src/buttonhw.o \
 ./src/buttontask.o \
+./src/dma.o \
 ./src/ledhardware.o \
 ./src/ledtask.o \
 ./src/main.o \
@@ -25,11 +28,13 @@ OBJS += \
 ./src/syscalls.o \
 ./src/system_stm32f4xx.o \
 ./src/taskcommon.o \
-./src/taskhandler.o 
+./src/taskhandler.o \
+./src/uart.o 
 
 C_DEPS += \
 ./src/buttonhw.d \
 ./src/buttontask.d \
+./src/dma.d \
 ./src/ledhardware.d \
 ./src/ledtask.d \
 ./src/main.d \
@@ -37,7 +42,8 @@ C_DEPS += \
 ./src/syscalls.d \
 ./src/system_stm32f4xx.d \
 ./src/taskcommon.d \
-./src/taskhandler.d 
+./src/taskhandler.d \
+./src/uart.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

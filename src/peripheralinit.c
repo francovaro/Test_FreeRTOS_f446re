@@ -8,6 +8,7 @@
 #include "peripheralinit.h"
 #include "ledhardware.h"
 #include "buttonhw.h"
+#include "uart.h"
 
 
 uint8_t uiPeripheralInit_Init( void )
@@ -16,6 +17,7 @@ uint8_t uiPeripheralInit_Init( void )
 
 	vLedHardware_InitLed();
 	vButtonHardware_Init();
+	UART_fv_config(RESET);
 
 	return retVal;
 }

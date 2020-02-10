@@ -9,6 +9,7 @@
 "src/FreeRTOS/portable/MemMang/heap_4.o"
 "src/buttonhw.o"
 "src/buttontask.o"
+"src/dma.o"
 "src/ledhardware.o"
 "src/ledtask.o"
 "src/main.o"
@@ -17,4 +18,5 @@
 "src/system_stm32f4xx.o"
 "src/taskcommon.o"
 "src/taskhandler.o"
+"src/uart.o"
 "startup/startup_stm32.o"
