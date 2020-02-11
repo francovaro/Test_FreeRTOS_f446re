@@ -63,7 +63,7 @@ void vUSART2_config(uint8_t irqEnabled)
 	vDMA_USART2_Configuration();
 
 	/* Enable USART DMA RX Requsts */
-	USART_DMACmd(USART2, (USART_DMAReq_Rx | USART_DMAReq_Rx), ENABLE);
+	USART_DMACmd(USART2, (USART_DMAReq_Rx | USART_DMAReq_Tx), ENABLE);
 
 	/* Start UART2 */
 	USART_Cmd(USART2 , ENABLE);

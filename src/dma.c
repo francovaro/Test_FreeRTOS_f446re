@@ -141,15 +141,32 @@ static void vDMA_UART_NVIC_Configuration(void)
  */
 void vDMA_USART2_SendData(uint8_t* pString, uint8_t n_byte)
 {
-	uint8_t i;
+	uint8_t 	i;
+	uint32_t 	primask;
 
 	for (i = 0 ; i < n_byte ; i++)
 	{
 		dma_uart_TX_buffer[i] = pString[i];
 	}
+    primask = __get_PRIMASK();
+    __disable_irq();
 
-	DMA_SetCurrDataCounter(DMA1_Stream6, n_byte);
-	DMA_Cmd(DMA1_Stream6, ENABLE);
+    //DMA_ClearFlag(DMA1_Stream6, DMA_FLAG_TCIF6);
+    //DMA_ClearFlag(DMA1_Stream6, DMA_FLAG_HTIF6);
+    //DMA_ClearFlag(DMA1_Stream6, DMA_FLAG_TCIF6);
+    //DMA_ClearFlag(DMA1_Stream6, DMA_FLAG_TCIF6);
+
+    /* Prepare DMA for next transfer */
+    /* Important! DMA stream won't start if all flags are not cleared first */
+    DMA1->HIFCR = DMA_FLAG_FEIF6 | DMA_FLAG_DMEIF6 | DMA_FLAG_TEIF6 | DMA_FLAG_HTIF6 | DMA_FLAG_TCIF6;
+    DMA1_Stream6->M0AR = (uint32_t)dma_uart_TX_buffer;   /* Set memory address for DMA again */
+    DMA1_Stream6->NDTR = n_byte;    /* Set number of bytes to receive */
+    DMA1_Stream6->CR |= DMA_SxCR_EN;            /* Start DMA transfer */
+
+	// DMA_SetCurrDataCounter(DMA1_Stream6, n_byte);
+	// DMA_Cmd(DMA1_Stream6, ENABLE);
+
+	__set_PRIMASK(primask);
 }
 
 /**
