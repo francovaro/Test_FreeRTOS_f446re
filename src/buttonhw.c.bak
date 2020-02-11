@@ -1,12 +1,12 @@
-/**
-  ******************************************************************************
-  * @file    buttonhw.c
-  * @author  franc
-  * @version V1.0
-  * @date    24 ott 2019
-  * @brief   Button hw config
-  ******************************************************************************
-*/
+/*
+ * buttonhw.c
+ *
+ *  Created on: 24 ott 2019
+ *      Author: franc
+ */
+
+#ifndef BUTTONHW_C_
+#define BUTTONHW_C_
 
 /* FreeRTOS include */
 #include "FreeRTOS.h"
@@ -20,14 +20,9 @@
 
 /* internl include */
 #include "buttonhw.h"
-#include "buttontask.h"
 
 static SemaphoreHandle_t* pgSemButton = 0;
 
-/**
- * @brief 
- * 
- */
 void vButtonHardware_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -74,10 +69,6 @@ void vButtonHardware_Init(void)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-/**
- * @brief IRQ handler for the button.
- * 
- */
 void EXTI15_10_IRQHandler(void)
 {
 	BaseType_t taskWoken = pdFALSE;
@@ -94,3 +85,5 @@ void EXTI15_10_IRQHandler(void)
 		portYIELD_FROM_ISR( taskWoken );
 	}
 }
+
+#endif /* BUTTONHW_C_ */

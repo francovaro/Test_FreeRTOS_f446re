@@ -1,10 +1,12 @@
-/*
- * ledtask.c
- *
- *  Created on: 15 ott 2019
- *      Author: franc
- */
-
+/**
+  ******************************************************************************
+  * @file    ledtask.c
+  * @author  franc
+  * @version V1.0
+  * @date    15 ott 2019
+  * @brief   Led task
+  ******************************************************************************
+*/
 
 
 /* Scheduler includes. */
@@ -18,6 +20,11 @@
 
 const uint16_t delayTask[] = {25, 50, 75, 100, 150, 200, 300, 500};
 
+/**
+ * @brief Led task. When receives something in the queue, change the period of the led
+ * 
+ * @param pvParameters 
+ */
 void vLedTask( void *pvParameters )
 {
 	QueueHandle_t* ptaskcommon_Queue;
@@ -27,16 +34,20 @@ void vLedTask( void *pvParameters )
 
 	ptaskcommon_Queue = vTaskcommon_GetQueue();
 
-	while(1)
+	if (ptaskcommon_Queue != NULL)
 	{
-		if( xQueueReceive( *ptaskcommon_Queue,
-				&element,
-				0) == pdTRUE)
+		while(1)
 		{
-			index = (index + 1)%maxIndex;
-		}
+			if( xQueueReceive( *ptaskcommon_Queue,	/* if element received */
+					&element,
+					0) == pdTRUE)	/* 0, do not block */
+			{
+				index = (index + 1)%maxIndex;		/* change sleep time */
+			}
 
-		vLedHardware_Toggle();
-		vTaskDelay( pdMS_TO_TICKS( delayTask[index] ) );
+			vLedHardware_Toggle();								/* toggles the LED */
+			vTaskDelay( pdMS_TO_TICKS( delayTask[index] ) );	/* sleep */
+		}
 	}
+
 }

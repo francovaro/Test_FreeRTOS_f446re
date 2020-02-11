@@ -1,11 +1,12 @@
-/*
- *  @file  : uart_task.c
- *	
- *  @brief	
- *
- *  @author: franc
- *  @date  : 10 feb 2020
- */
+/**
+  ******************************************************************************
+  * @file    uart_task.c
+  * @author  franc
+  * @version V1.0
+  * @date    24 ott 2019
+  * @brief   Uart task
+  ******************************************************************************
+*/
 
 /* FreeRTOS include */
 #include "FreeRTOS.h"
@@ -31,11 +32,12 @@ extern __IO  uint8_t dma_uart_RX_buffer[];
 extern __IO  uint8_t dma_uart_TX_byte;
 extern __IO  uint8_t dma_uart_RX_byte;
 
-static SemaphoreHandle_t gUart_TX_Button;
+static SemaphoreHandle_t pUart_TX_Sem;
 
 /**
- *
- * @param pvParameters
+ * @brief Task for UART. It blocks on RX with a sempahore.
+ * 
+ * @param pvParameters 
  */
 void vUartTask( void *pvParameters )
 {
@@ -49,23 +51,23 @@ void vUartTask( void *pvParameters )
 
     BaseType_t retVal;
 
-    gUart_TX_Button = xSemaphoreCreateBinary();
+    pUart_TX_Sem = xSemaphoreCreateBinary();
 
-
-
-    if (gUart_TX_Button != NULL)
+    if (pUart_TX_Sem != NULL)
     {
-    	UART_DMA_set_sem(&gUart_TX_Button);
+    	vDMA_USART2_Set_Sem(&pUart_TX_Sem);
 
-        //UART_fv_SendData(pStart, strlen(pStart));
-        UART_DMA_SendData(pStart, strlen(pStart));
+        //vUSART2_SendData(pStart, strlen(pStart));
+        vDMA_USART2_SendData(pStart, strlen(pStart));
 
     	while(1)
     	{
-    		retVal = xSemaphoreTake( gUart_TX_Button, portMAX_DELAY);
+    		retVal = xSemaphoreTake( pUart_TX_Sem, portMAX_DELAY);
     		if (retVal == pdTRUE)
     		{
-
+				/* 
+				 * What we do ?
+				 */
     		}
     	}
     }
@@ -74,10 +76,11 @@ void vUartTask( void *pvParameters )
 }
 
 /**
- *
- * @return
+ * @brief Returns private semaphore pointer
+ * 
+ * @return SemaphoreHandle_t* pointer to the private semaphore
  */
 SemaphoreHandle_t * sem_UartTask_GetSemHandler(void)
 {
-	return &gUart_TX_Button;
+	return &pUart_TX_Sem;
 }

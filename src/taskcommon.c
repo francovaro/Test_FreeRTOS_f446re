@@ -1,10 +1,12 @@
-/*
- * taskcommon.c
- *
- *  Created on: 26 ott 2019
- *      Author: franc
- */
-
+/**
+  ******************************************************************************
+  * @file    taskcommon.c
+  * @author  franc
+  * @version V1.0
+  * @date    26 ott 2019
+  * @brief   Common task stuff
+  ******************************************************************************
+*/
 #include "taskcommon.h"
 
 /**

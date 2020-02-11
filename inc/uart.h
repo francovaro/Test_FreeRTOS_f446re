@@ -1,8 +1,10 @@
 /*
- * uart.h
+ *  @file  : uart.c
+ *	
+ *  @brief : 
  *
- *  Created on: 05 ott 2019
- *      Author: franc
+ *  @author: franc
+ *  @date  : 05 oct 2019
  */
 
 #ifndef UART_H_
@@ -12,14 +14,14 @@
 
 #define USART_MAX_BUFFER (255u)
 
-volatile uint8_t usart_rxBuffer[USART_MAX_BUFFER];
+__IO uint8_t usart_rxBuffer[USART_MAX_BUFFER];
 
-volatile FlagStatus usart_serialReceived;
-volatile uint16_t usart_nrOfByte;
+__IO FlagStatus usart_serialReceived;
+__IO uint16_t usart_nrOfByte;
 
-extern void UART_fv_config(uint8_t irqEnabled);
-extern void UART_fv_SendData(const char * strToSend, uint16_t byteToSend);
+extern void vUSART2_config(uint8_t irqEnabled);
+extern void vUSART2_SendData(const char * strToSend, uint16_t byteToSend);
 
-int uart_putc(int c);
+extern uint8_t vUSART2_PutC(int c);
 
 #endif /* UART_H_ */

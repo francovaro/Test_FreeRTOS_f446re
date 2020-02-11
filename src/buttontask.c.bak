@@ -17,7 +17,7 @@
 #include "taskcommon.h"
 
 
-extern __IO uint8_t gButtonHwPressed;
+extern volatile uint8_t gButtonHwPressed;
 static SemaphoreHandle_t gSemButton;
 
 void vButtonTask( void *pvParameters )

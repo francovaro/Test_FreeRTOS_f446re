@@ -21,7 +21,6 @@
 #include "taskhandler.h"
 #include "peripheralinit.h"
 
-
 unsigned long ulRunTimeStatsClock;
 
 int main(void)
@@ -34,6 +33,11 @@ int main(void)
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
+
+  while(1)
+  {
+
+  }
 
 	return 0;
 }
