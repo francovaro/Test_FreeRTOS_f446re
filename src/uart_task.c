@@ -26,12 +26,6 @@ typedef enum
 
 const uint8_t command[e_Uart_command_max][5u] = { "c01#" };
 
-extern __IO  uint8_t dma_uart_TX_buffer[];
-extern __IO  uint8_t dma_uart_RX_buffer[];
-
-extern __IO  uint8_t dma_uart_TX_byte;
-extern __IO  uint8_t dma_uart_RX_byte;
-
 static SemaphoreHandle_t pUart_TX_Sem;
 
 /**
@@ -47,7 +41,7 @@ void vUartTask( void *pvParameters )
     static uint8_t _internal_RX_index = 0;
     static uint8_t _internal_TX_index = 0;
 
-    const char *pStart = "Hello\n";
+    uint8_t *pStart = "Hello\n";
 
     BaseType_t retVal;
 
@@ -68,6 +62,9 @@ void vUartTask( void *pvParameters )
 				/* 
 				 * What we do ?
 				 */
+    			_internal_RX_index = uiDMA_USART2_Get_Index();
+    			vDMA_USART2_Get_Buffer(_internal_RX_buffer, _internal_RX_index);
+    			vDMA_USART2_Clr_Index();
     		}
     	}
     }

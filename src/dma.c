@@ -10,9 +10,11 @@
 
 #include "dma.h"
 
+#include "task.h"
+
 #include "uart_task.h"
 
-static SemaphoreHandle_t *pUart_TX_Sem;
+static SemaphoreHandle_t *pDMA_Uart_TX_Sem;
 
 static void vDMA_UART_NVIC_Configuration(void);
 
@@ -24,9 +26,9 @@ void vDMA_USART2_Configuration( void )
 {
 	DMA_InitTypeDef DMA_InitStructure;
 
-	//pUart_TX_Sem = sem_UartTask_GetSemHandler();
+	//pDMA_Uart_TX_Sem = sem_UartTask_GetSemHandler();
 
-	//if (*pUart_TX_Sem != NULL)
+	//if (*pDMA_Uart_TX_Sem != NULL)
 	{
 		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
@@ -38,12 +40,12 @@ void vDMA_USART2_Configuration( void )
 		DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;          
 		DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&dma_uart_RX_buffer[0];
 		DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-		DMA_InitStructure.DMA_BufferSize = 2;
+		DMA_InitStructure.DMA_BufferSize = 1;
 		DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;         
 		DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;                  
 		DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
 		DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-		DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+		DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
 		DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 		DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
 		DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;		/* half full ? */
@@ -51,8 +53,6 @@ void vDMA_USART2_Configuration( void )
 		DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 		DMA_Init(DMA1_Stream5, &DMA_InitStructure);
 
-		/* interrupt a trasferimento completo */
-		DMA_ITConfig(DMA1_Stream5, DMA_IT_TC,  ENABLE);	/* enable interrupt */
 
 		/* DMA1_Stream5 enable */
 		DMA_Cmd(DMA1_Stream5, ENABLE);
@@ -84,6 +84,7 @@ void vDMA_USART2_Configuration( void )
 		vDMA_UART_NVIC_Configuration();
 
 		DMA_ITConfig(DMA1_Stream5, DMA_IT_TC,  ENABLE);
+		//DMA_ITConfig(DMA1_Stream5, DMA_IT_HT,  ENABLE);
 		DMA_ITConfig(DMA1_Stream6, DMA_IT_TC,  ENABLE);
 	}
 }
@@ -93,12 +94,32 @@ void vDMA_USART2_Configuration( void )
  */
 void DMA1_Stream5_IRQHandler(void)
 {
-	DMA_ClearITPendingBit(DMA1_Stream5, DMA_IT_TCIF5);
-	if (*pUart_TX_Sem != NULL)
-	{
-		//while(!(USART2->SR & USART_SR_TC));
-		xSemaphoreGive( *pUart_TX_Sem );
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+#if 0
+	 if(DMA1 -> HISR & (DMA_HISR_HTIF5))
+	 {
+		DMA1 -> HIFCR |= DMA_HISR_HTIF5;
+		if (*pDMA_Uart_TX_Sem != NULL)
+		{
+			dma_uart_RX_byte++;
+			xSemaphoreGiveFromISR( *pDMA_Uart_TX_Sem, &xHigherPriorityTaskWoken);
+		}
 	}
+	 else
+#endif
+	 if(DMA1 -> HISR & (DMA_HISR_TCIF5))
+	 {
+		DMA1 -> HIFCR |= DMA_HISR_TCIF5;
+		if (*pDMA_Uart_TX_Sem != NULL)
+		{
+			dma_uart_RX_byte++;
+			DMA1_Stream5->M0AR = (uint32_t)&dma_uart_RX_buffer[dma_uart_RX_byte];
+			DMA1_Stream5->CR |= DMA_SxCR_EN;            /* Start DMA transfer */
+			xSemaphoreGiveFromISR( *pDMA_Uart_TX_Sem, &xHigherPriorityTaskWoken);
+
+		}
+	}
+	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 }
 
 /**
@@ -106,11 +127,10 @@ void DMA1_Stream5_IRQHandler(void)
  */
 void DMA1_Stream6_IRQHandler(void)
 {
-	// if(DMA1 -> HISR & (DMA_HISR_TCIF6))
-	//DMA1 -> HIFCR |= DMA_HISR_TCIF6;
-	//while(!(USART2->SR & USART_SR_TC));	/* */
-	DMA_ClearITPendingBit(DMA1_Stream6, DMA_IT_TCIF6);
-	DMA_Cmd(DMA1_Stream6, DISABLE);	/* needed ? */
+	if(DMA1 -> HISR & (DMA_HISR_TCIF6))
+	DMA1 -> HIFCR |= DMA_HISR_TCIF6;
+	while(!(USART2->SR & USART_SR_TC));	/* */
+	dma_uart_TX_byte++;
 }
 
 /**
@@ -176,5 +196,40 @@ void vDMA_USART2_SendData(uint8_t* pString, uint8_t n_byte)
  */
 void vDMA_USART2_Set_Sem(SemaphoreHandle_t *pSem)
 {
-	pUart_TX_Sem = pSem;
+	pDMA_Uart_TX_Sem = pSem;
+}
+
+/**
+ *
+ */
+void vDMA_USART2_Clr_Index(void)
+{
+	//DMA1_Stream5->CR |= DMA_SxCR_EN;            /* Start DMA transfer */
+	//dma_uart_RX_byte = 0;
+	//DMA1_Stream5->CR &= (~DMA_SxCR_EN);            /* Start DMA transfer */
+	//DMA1_Stream5->M0AR = (uint32_t)&dma_uart_RX_buffer[0];
+	//DMA1_Stream5->CR |= DMA_SxCR_EN;            /* Start DMA transfer */
+}
+
+/**
+ *
+ * @return
+ */
+uint8_t uiDMA_USART2_Get_Index(void)
+{
+	return dma_uart_RX_byte;
+}
+
+/**
+ *
+ * @param buf
+ * @param nrBytes
+ */
+void vDMA_USART2_Get_Buffer(uint8_t *buf, uint8_t nrBytes)
+{
+	uint8_t i;
+	for ( i=0; i< nrBytes ; i++)
+	{
+		buf[i] = dma_uart_RX_buffer[i];
+	}
 }
