@@ -26,10 +26,4 @@ extern void vDMA_USART2_Clr_Index(void);
 extern uint8_t uiDMA_USART2_Get_Index(void);
 extern void vDMA_USART2_Get_Buffer(uint8_t *buf, uint8_t nrBytes);
 
-__IO uint8_t dma_uart_TX_buffer[BUFFER_SIZE];
-__IO uint8_t dma_uart_RX_buffer[BUFFER_SIZE];
-
-__IO uint8_t dma_uart_TX_byte;
-__IO uint8_t dma_uart_RX_byte;
-
 #endif /* INC_DMA_H_ */
