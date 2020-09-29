@@ -15,7 +15,8 @@
 #include <string.h>
 
 #include "uart_task.h"
-#include "uart.h"
+#include "inc\lib_uart.h"
+#include "stddef.h"
 #include "dma.h"
 
 typedef enum
@@ -41,7 +42,7 @@ void vUartTask( void *pvParameters )
     static uint8_t _internal_RX_index = 0;
     static uint8_t _internal_TX_index = 0;
 
-    uint8_t *pStart = "Hello\n";
+    char *pStart = "Hello\n";
 
     BaseType_t retVal;
 
@@ -51,8 +52,7 @@ void vUartTask( void *pvParameters )
     {
     	vDMA_USART2_Set_Sem(&pUart_TX_Sem);
 
-        //vUSART2_SendData(pStart, strlen(pStart));
-        vDMA_USART2_SendData(pStart, strlen(pStart));
+    	UART_lib_sendData(pStart, strlen(pStart));
 
     	while(1)
     	{
@@ -80,4 +80,19 @@ void vUartTask( void *pvParameters )
 SemaphoreHandle_t * sem_UartTask_GetSemHandler(void)
 {
 	return &pUart_TX_Sem;
+}
+
+void USART2_IRQHandler(void)
+{
+	volatile uint32_t tmp;
+	/* */
+	if( USART_GetITStatus(USART2, USART_IT_IDLE) == SET)
+	{
+		tmp = USART2->SR;
+		tmp = USART2->DR;
+		(void)tmp;
+
+		DMA1_Stream5->CR &= ~DMA_SxCR_EN;            /* Stop DMA transfer - TC is triggered  */
+		//vDMA_USART2_signal_idle();
+	}
 }

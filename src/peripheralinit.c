@@ -11,7 +11,8 @@
 #include "peripheralinit.h"
 #include "ledhardware.h"
 #include "buttonhw.h"
-#include "uart.h"
+#include "dma.h"
+#include "inc\lib_uart.h"
 
 /**
  * @brief Calls all the peripheral initialisation
@@ -24,7 +25,9 @@ uint8_t uiPeripheralInit_Init( void )
 
 	vLedHardware_InitLed();
 	vButtonHardware_Init();
-	vUSART2_config(RESET);
+
+	vDMA_USART2_Configuration(DISABLE, ENABLE);
+	UART_lib_config(e_UART_2, ENABLE, USART_IT_IDLE, USART_DMAReq_Rx);
 
 	return retVal;
 }
