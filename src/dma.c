@@ -18,9 +18,9 @@
 #define RX_BUFFER_SIZE	100
 
 static SemaphoreHandle_t *pDMA_Uart_TX_Sem;
-static uint8_t dma_uart_TX_buffer[BUFFER_SIZE] = {0};
-static uint8_t dma_uart_RX_buffer_1[BUFFER_SIZE] = {0};
-static uint8_t dma_uart_RX_buffer_2[BUFFER_SIZE] = {0};
+static int8_t dma_uart_TX_buffer[BUFFER_SIZE] = {0};
+static int8_t dma_uart_RX_buffer_1[BUFFER_SIZE] = {0};
+static int8_t dma_uart_RX_buffer_2[BUFFER_SIZE] = {0};
 
 static uint8_t dma_uart_TX_byte;
 static uint8_t dma_uart_RX_byte_1;
@@ -262,7 +262,7 @@ uint8_t uiDMA_USART2_Get_Index(void)
  * @param buf
  * @param nrBytes
  */
-void vDMA_USART2_Get_Buffer(uint8_t *buf, uint8_t nrBytes)
+void vDMA_USART2_Get_Buffer(int8_t *buf, uint8_t nrBytes)
 {
 	uint8_t i;
 	for ( i=0; i< nrBytes ; i++)

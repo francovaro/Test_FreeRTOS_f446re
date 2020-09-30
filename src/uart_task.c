@@ -36,13 +36,13 @@ static SemaphoreHandle_t pUart_TX_Sem;
  */
 void vUartTask( void *pvParameters )
 {
-	static uint8_t _internal_RX_buffer[BUFFER_SIZE] = {0};
-    static uint8_t _internal_TX_buffer[BUFFER_SIZE] = {0};
+	static int8_t _internal_RX_buffer[BUFFER_SIZE] = {0};
+    static int8_t _internal_TX_buffer[BUFFER_SIZE] = {0};
 
     static uint8_t _internal_RX_index = 0;
     static uint8_t _internal_TX_index = 0;
 
-    char *pStart = "Hello\n";
+    int8_t pStart[] = "Hello\n";
 
     BaseType_t retVal;
 
@@ -64,6 +64,9 @@ void vUartTask( void *pvParameters )
 				 */
     			_internal_RX_index = uiDMA_USART2_Get_Index();
     			vDMA_USART2_Get_Buffer(_internal_RX_buffer, _internal_RX_index);
+
+    			UART_lib_sendData(_internal_RX_buffer, _internal_RX_index);
+
     			vDMA_USART2_Clr_Index();
     		}
     	}
