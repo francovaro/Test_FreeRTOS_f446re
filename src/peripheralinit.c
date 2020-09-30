@@ -26,8 +26,8 @@ uint8_t uiPeripheralInit_Init( void )
 	vLedHardware_InitLed();
 	vButtonHardware_Init();
 
-	vDMA_USART2_Configuration(DISABLE, ENABLE);
-	UART_lib_config(e_UART_2, ENABLE, USART_IT_IDLE, USART_DMAReq_Rx);
+	vDMA_USART2_Configuration(ENABLE, ENABLE);
+	UART_lib_config(e_UART_2, ENABLE, USART_IT_IDLE, USART_DMAReq_Rx | USART_DMAReq_Tx);
 
 	return retVal;
 }

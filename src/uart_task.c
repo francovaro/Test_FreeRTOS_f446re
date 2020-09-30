@@ -42,8 +42,6 @@ void vUartTask( void *pvParameters )
     static uint8_t _internal_RX_index = 0;
     static uint8_t _internal_TX_index = 0;
 
-    int8_t pStart[] = "Hello\n";
-
     BaseType_t retVal;
 
     pUart_TX_Sem = xSemaphoreCreateBinary();
@@ -52,7 +50,8 @@ void vUartTask( void *pvParameters )
     {
     	vDMA_USART2_Set_Sem(&pUart_TX_Sem);
 
-    	UART_lib_sendData(pStart, strlen(pStart));
+    	(void)_internal_TX_buffer;
+    	(void)_internal_TX_index;
 
     	while(1)
     	{
@@ -65,14 +64,12 @@ void vUartTask( void *pvParameters )
     			_internal_RX_index = uiDMA_USART2_Get_Index();
     			vDMA_USART2_Get_Buffer(_internal_RX_buffer, _internal_RX_index);
 
-    			UART_lib_sendData(_internal_RX_buffer, _internal_RX_index);
+    			vDMA_USART2_SendData(_internal_RX_buffer, _internal_RX_index);
 
     			vDMA_USART2_Clr_Index();
     		}
     	}
     }
-
-
 }
 
 /**
@@ -85,6 +82,9 @@ SemaphoreHandle_t * sem_UartTask_GetSemHandler(void)
 	return &pUart_TX_Sem;
 }
 
+/**
+ *
+ */
 void USART2_IRQHandler(void)
 {
 	volatile uint32_t tmp;
@@ -96,6 +96,6 @@ void USART2_IRQHandler(void)
 		(void)tmp;
 
 		DMA1_Stream5->CR &= ~DMA_SxCR_EN;            /* Stop DMA transfer - TC is triggered  */
-		//vDMA_USART2_signal_idle();
+		//vDMA_USART2_signal_idle(pdTRUE);
 	}
 }

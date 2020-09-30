@@ -23,6 +23,10 @@
 
 unsigned long ulRunTimeStatsClock;
 
+/**
+ *
+ * @return
+ */
 int main(void)
 {
 	/* init peripheral*/
