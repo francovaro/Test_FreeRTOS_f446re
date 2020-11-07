@@ -183,7 +183,7 @@ static void vDMA_UART_NVIC_Configuration(uint8_t dma_channel)
  * @param pString 
  * @param n_byte 
  */
-void vDMA_USART2_SendData(int8_t* pString, uint8_t n_byte)
+void vDMA_USART2_SendData(char* pString, uint8_t n_byte)
 {
 	uint8_t 	i;
 	uint32_t 	primask;
@@ -222,7 +222,7 @@ void vDMA_USART2_Clr_Index(void)
 {
 //	DMA1_Stream5->CR &= ~DMA_SxCR_EN;            /* Start DMA transfer */
 	dma_uart_RX_byte = 0;
-	memset(dma_uart_RX_buffer, "0", BUFFER_SIZE);
+	memset((int8_t*)&dma_uart_RX_buffer[0], 0, BUFFER_SIZE);
 //	DMA1_Stream5->M0AR = (uint32_t)&dma_uart_RX_buffer[0];
 //	DMA1_Stream5->NDTR = RX_BUFFER_SIZE;
 //
@@ -287,7 +287,7 @@ void vDMA_USART2_signal_idle(void)
 
 	if (temp_byte != 0)
 	{
-		memcpy(&dma_local_read_buffer[dma_uart_RX_byte], dma_uart_RX_buffer, temp_byte);
+		memcpy(&dma_local_read_buffer[dma_uart_RX_byte], (int8_t*)&dma_uart_RX_buffer[0], temp_byte);
 		dma_uart_RX_byte += temp_byte;
 		xSemaphoreGiveFromISR( *pDMA_Uart_TX_Sem, &xHigherPriorityTaskWoken);
 	}

@@ -10,6 +10,7 @@
 "src/buttonhw.o"
 "src/buttontask.o"
 "src/dma.o"
+"src/hc_sr04_task.o"
 "src/ledhardware.o"
 "src/ledtask.o"
 "src/main.o"

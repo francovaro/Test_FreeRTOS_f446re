@@ -7,6 +7,7 @@ C_SRCS += \
 ../src/buttonhw.c \
 ../src/buttontask.c \
 ../src/dma.c \
+../src/hc_sr04_task.c \
 ../src/ledhardware.c \
 ../src/ledtask.c \
 ../src/main.c \
@@ -21,6 +22,7 @@ OBJS += \
 ./src/buttonhw.o \
 ./src/buttontask.o \
 ./src/dma.o \
+./src/hc_sr04_task.o \
 ./src/ledhardware.o \
 ./src/ledtask.o \
 ./src/main.o \
@@ -35,6 +37,7 @@ C_DEPS += \
 ./src/buttonhw.d \
 ./src/buttontask.d \
 ./src/dma.d \
+./src/hc_sr04_task.d \
 ./src/ledhardware.d \
 ./src/ledtask.d \
 ./src/main.d \

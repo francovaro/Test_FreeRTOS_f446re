@@ -20,7 +20,7 @@
 #define BUFFER_SIZE	(100u)
 
 extern void vDMA_USART2_Configuration( BaseType_t dma_tx, BaseType_t dma_rx );
-extern void vDMA_USART2_SendData(int8_t* pString, uint8_t n_byte);
+extern void vDMA_USART2_SendData(char* pString, uint8_t n_byte);
 extern void vDMA_USART2_Set_Sem(SemaphoreHandle_t *pSem);
 extern void vDMA_USART2_Clr_Index(void);
 extern uint8_t uiDMA_USART2_Get_Index(void);

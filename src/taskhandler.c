@@ -16,8 +16,9 @@
 #include "ledtask.h"
 #include "buttontask.h"
 #include "uart_task.h"
+#include "hc_sr04_task.h"
 
-#define TOTAL_TASK 	(3u)
+#define TOTAL_TASK 	(5u)
 
 static TaskHandle_t * taskArray[TOTAL_TASK];
 
@@ -42,12 +43,26 @@ uint8_t uiTaskhandler_CreateAllTasks(void)
 			taskArray[1] );			/* handler */
 
 
-	xTaskCreate( vUartTask,	/* function*/
-			"Uart Task", 	/* name */
+	xTaskCreate( vUart_rx_Task,	/* function*/
+			"Uart RX Task", 	/* name */
 			1000, 			/* stack size */
 			NULL, 			/* param */
 			1, 				/* prio */
 			taskArray[2] );			/* handler */
+
+	xTaskCreate( vUart_tx_Task,	/* function*/
+			"Uart TX Task", 	/* name */
+			1000, 			/* stack size */
+			NULL, 			/* param */
+			1, 				/* prio */
+			taskArray[3] );			/* handler */
+
+	xTaskCreate( vHC_SR04_Task,	/* function*/
+			"HC-SR04 Task", 	/* name */
+			1000, 			/* stack size */
+			NULL, 			/* param */
+			1, 				/* prio */
+			taskArray[4] );			/* handler */
 
 	return retVal;
 }

@@ -385,7 +385,7 @@
 
 #if defined(STM32F446xx)
 /* PLL division factor for I2S, SAI, SYSTEM and SPDIF: Clock =  PLL_VCO / PLLR */
-#define PLL_R      2	// was 7
+#define PLL_R      7
 #elif defined(STM32F412xG) || defined(STM32F413_423xx)
 #define PLL_R      2
 #else
@@ -757,7 +757,7 @@ static void SetSysClock(void)
     RCC->CFGR |= RCC_CFGR_SW_PLL;
 
     /* Wait till the main PLL is used as system clock source */
-    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL)
+    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL);
     {
     }
   }

@@ -12,6 +12,8 @@
 #include "ledhardware.h"
 #include "buttonhw.h"
 #include "dma.h"
+#include "hc_sr04_task.h"
+#include "uart_task.h"
 #include "inc\lib_uart.h"
 
 /**
@@ -28,6 +30,9 @@ uint8_t uiPeripheralInit_Init( void )
 
 	vDMA_USART2_Configuration(ENABLE, ENABLE);
 	UART_lib_config(e_UART_2, ENABLE, USART_IT_IDLE, USART_DMAReq_Rx | USART_DMAReq_Tx);
+	vUart_task_init();
+
+	HC_SR04_Init();
 
 	return retVal;
 }

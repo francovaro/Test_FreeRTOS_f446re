@@ -10,9 +10,29 @@
 #ifndef INC_UART_TASK_H_
 #define INC_UART_TASK_H_
 
+/* FreeRTOS include */
+#include "FreeRTOS.h"
+#include "queue.h"
+
 #include "semphr.h"
 
-extern void vUartTask( void *pvParameters );
-extern SemaphoreHandle_t * sem_UartTask_GetSemHandler(void);
+#define UART_TASK_QUEUE_SIZE	(5u)
+
+/**
+ * @brief struct
+ *
+ */
+typedef struct
+{
+	uint8_t senderId;
+	char 	text[15u];
+	uint8_t nr_byte;
+} sUartTask_Queue;
+
+extern void vUart_rx_Task( void *pvParameters );
+extern void vUart_tx_Task( void *pvParameters );
+extern SemaphoreHandle_t * sem_UartTask_GetSemHandler( void );
+extern void vUart_task_init(void);
+extern QueueHandle_t* UartTask_GetQueue(void);
 
 #endif /* INC_UART_TASK_H_ */
