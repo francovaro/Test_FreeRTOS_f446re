@@ -1,9 +1,9 @@
 /*
  *  @file  : hc_sr04_task.c
  *	
- *  @brief	
+ *  @brief : stuff to handle the hcsr04 (pin and timer) and the task to read the value and send to the queue
  *
- *  @author: franc
+ *  @author: Francesco Varani
  *  @date  : 02 ott 2020
  */
 #include "FreeRTOS.h"
@@ -17,6 +17,7 @@
 #include "uart_task.h"
 #include "stm32f4xx.h"
 
+/* ------------------------------- Define -------------------------------*/
 #define HC_TRIGGER_PIN		GPIO_Pin_10
 #define HC_TRIGGER_PIN_SRC	GPIO_PinSource10
 #define HC_TRIGGER_PORT		GPIOB
@@ -27,16 +28,23 @@
 #define HC_ECHO_PORT		GPIOA
 #define HC_ECHO_CLOCK		RCC_AHB1Periph_GPIOA
 
+#define ECHO_TIM_PERIOD		(60000u)
+#define	PULSE_TIM_LEN		(10u)
+
+/* ------------------------------- Private data -------------------------------*/
 static 			uint32_t hc_sr_timeRead;
 static 			SemaphoreHandle_t pHC_sem;
 QueueHandle_t	*local_uart_task_queue;
 
+/* ------------------------------- Private function declaration -------------------------------*/
 static void HC_SR04_Init_Pin(void);
 static void HC_SR04_Init_Timer(void);
 static void HC_SR04_StartInterrupt(void);
 
+/* ------------------------------- Public function implementation -------------------------------*/
+
 /**
- *
+ * @brief Initialize private data and hardware stuff like pin and timer
  */
 void HC_SR04_Init (void)
 {
@@ -70,7 +78,7 @@ void vHC_SR04_Task (void *pvParameters)
 				/*
 				 * write the val to uart*0.17
 				 */
-				snprintf(element_to_write.text, 15u, "%.2f",( hc_sr_timeRead*0.17) );
+				snprintf(element_to_write.text, UART_STRING_QUEUE_LEN, "%.2f",( hc_sr_timeRead*0.017f) );
 				xQueueSend(*local_uart_task_queue, &element_to_write, 0);
 			}
 		}
@@ -93,24 +101,18 @@ static void HC_SR04_Init_Timer(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	RCC_GetClocksFreq(&RCC_ClocksStatus);
-	uint16_t prescaler = ((RCC_ClocksStatus.HCLK_Frequency/2)) / 1000000 - 1; //1 tick = 1us (1 tick = 0.165mm resolution)
-
-	/*
-	 * not sure about the calc of the prescaler
-	 * shouldn t be HCLK/2 ?
-	 * */
+	uint16_t prescaler = ((RCC_ClocksStatus.PCLK1_Frequency*2)) / 1000000 - 1; //1 tick = 1us (1 tick = 0.165mm resolution)
 
 	/* -------------------------- TIM 2 setting -------------------------- */
 	/* TIM 2 is used as output compare
 	 * to generate the desired pulse of 10 us
 	 */
-	//TIM_DeInit(TIM2);
 
 	TIM_TimeBaseStructInit(&TIM_TimeBaseInitStruct);
 
 	TIM_TimeBaseInitStruct.TIM_Prescaler = prescaler;
 	TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInitStruct.TIM_Period = 0xFFFF;						/* period ? */
+	TIM_TimeBaseInitStruct.TIM_Period = ECHO_TIM_PERIOD;						/* period ? */
 	TIM_TimeBaseInitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseInitStruct);	/* TIM 2 */
 	TIM_TimeBaseInit(TIM5, &TIM_TimeBaseInitStruct);	/* TIM 5 */
@@ -119,27 +121,18 @@ static void HC_SR04_Init_Timer(void)
 	TIM_OCStructInit(&TIM_OCInitStruct);
 	TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1;	/* why pwm1 and not TIM_OCMode_Active */
 	TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStruct.TIM_Pulse = 15u; //us
+	TIM_OCInitStruct.TIM_Pulse = PULSE_TIM_LEN; //us
 	TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High;
 	TIM_OC3Init(TIM2, &TIM_OCInitStruct);
 
 	TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);	/* write CCMR2 */
-	TIM_ARRPreloadConfig(TIM2, DISABLE);	/* set ARPE Auto Pre Load */
 
 	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
-
-	NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
 
 	/* -------------------------- TIM 5 setting -------------------------- */
 	/* TIM 5 is used as input compare
 	 * to read the incoming pulse
 	 */
-	//TIM_DeInit(TIM5);
-
 
 	/* set TIM5 channel 1 for input compare on RISING edge */
 	TIM_ICStructInit(&TIM_ICInitStruct);
@@ -159,9 +152,7 @@ static void HC_SR04_Init_Timer(void)
 	TIM_ICInitStruct.TIM_ICFilter = 0;
 	TIM_ICInit(TIM5, &TIM_ICInitStruct);
 
-	//TIM_PWMIConfig(TIM5, &TIM_ICInitStruct);
-
-	/* select the  */
+	/* select the  input and slave mode */
 	TIM_SelectInputTrigger(TIM5 , TIM_TS_TI1FP1);		/* set the input */
 	TIM_SelectSlaveMode(TIM5 , TIM_SlaveMode_Reset);
 	TIM_SelectMasterSlaveMode(TIM5 , TIM_MasterSlaveMode_Enable);
@@ -169,8 +160,7 @@ static void HC_SR04_Init_Timer(void)
 	TIM_ITConfig(TIM5, TIM_IT_CC1, ENABLE);
 	TIM_ITConfig(TIM5, TIM_IT_CC2, ENABLE);
 
-
-	// No StructInit call in API
+	/* set nvic */
 	NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
@@ -221,6 +211,7 @@ static void HC_SR04_StartInterrupt(void)
 	TIM_Cmd(TIM5, ENABLE);				/* set CEN - Counter enable bit */
 }
 
+/* ------------------------------- Interrupt implementation -------------------------------*/
 /**
  *
  */
@@ -247,19 +238,17 @@ void TIM5_IRQHandler(void)
 		/*vCCxIF can be cleared by software by writing it to 0 or by reading the captured data stored in the
 		TIMx_CCRx register. */
 
- 		hc_sr_timeRead = /*startVal -*/ endValue;
+		if (startVal > endValue)
+		{
+			hc_sr_timeRead = endValue - (ECHO_TIM_PERIOD - startVal);
+		}
+		else
+		{
+			hc_sr_timeRead = endValue - startVal;
+		}
 
-		xSemaphoreGiveFromISR( pHC_sem, &xHigherPriorityTaskWoken);
+		xSemaphoreGiveFromISR( pHC_sem, &xHigherPriorityTaskWoken);	/* you're free*/
 	}
 
 	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
-}
-
-void TIM2_IRQHandler(void)
-{
-	/* is not used */
-	if (TIM_GetITStatus(TIM2, TIM_IT_CC1))
-	{
-		TIM_Cmd(TIM2, DISABLE);				/* clears CEN - Counter enable bit */
-	}
 }

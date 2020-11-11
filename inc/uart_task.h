@@ -16,6 +16,7 @@
 
 #include "semphr.h"
 
+#define UART_STRING_QUEUE_LEN	(15u)
 #define UART_TASK_QUEUE_SIZE	(5u)
 
 /**
@@ -25,7 +26,7 @@
 typedef struct
 {
 	uint8_t senderId;
-	char 	text[15u];
+	char 	text[UART_STRING_QUEUE_LEN];
 	uint8_t nr_byte;
 } sUartTask_Queue;
 
