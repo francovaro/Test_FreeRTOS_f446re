@@ -46,7 +46,7 @@ void vUart_task_init(void)
  */
 void vUart_rx_Task( void *pvParameters )
 {
-	static int8_t _internal_RX_buffer[BUFFER_SIZE] = {0};
+	static char _internal_RX_buffer[BUFFER_SIZE] = {0};
     static uint8_t _internal_RX_index = 0;
     BaseType_t retVal;
 
